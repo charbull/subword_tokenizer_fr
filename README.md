@@ -22,24 +22,46 @@ list the methods:
 [item for item in dir(tokenizers.en) if not item.startswith('_')]
 ```
 
+For french examples: 
+```
+examples, metadata = tfds.load('mtnt/fr-en',
+                               with_info=True,
+                               as_supervised=True)
+
+train_examples, val_examples = examples['train'], examples['valid']
+```
+
+print few:
+
+```
+for fr_examples, en_examples in train_examples.batch(3).take(1):
+  print('> Examples in French:')
+  for fr in fr_examples.numpy():
+    print(fr.decode('utf-8'))
+  print()
+
+  print('> Examples in English:')
+  for en in en_examples.numpy():
+    print(en.decode('utf-8'))
+```
+
+
 Tokenize:
 ```
-encoded = tokenizers.en.tokenize(en_examples)
-```
+encoded_fr = tokenizers.fr.tokenize(fr_examples)
 
-```
-
-# Tokenize the examples -> (batch, word, word-piece)
-token_batch_fr = fr_tokenizer.tokenize(fr_examples)
-# Merge the word and word-piece axes -> (batch, tokens)
-token_batch_fr = token_batch_fr.merge_dims(-2,-1)
+print('> This is a padded-batch of token IDs:')
+for row in encoded_fr.to_list():
+  print(row)
 ```
 
 To detokenize:
 
 ```
-words = fr_tokenizer.detokenize(token_batch_fr)
-fr_sentence = tf.strings.reduce_join(words, separator=' ', axis=-1)
-print(fr_sentence)
+round_trip = tokenizers.fr.detokenize(encoded_fr)
+
+print('> This is human-readable text:')
+for line in round_trip.numpy():
+  print(line.decode('utf-8'))
 ```
 
