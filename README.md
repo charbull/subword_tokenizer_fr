@@ -22,6 +22,10 @@ list the methods:
 [item for item in dir(tokenizers.en) if not item.startswith('_')]
 ```
 
+Tokenize:
+```
+encoded = tokenizers.en.tokenize(en_examples)
+```
 
 ```
 
