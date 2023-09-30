@@ -3,20 +3,28 @@ Learning how to make a french tokenizer
 
 ## How to use
 
-Pass the filename below.
+Download it
 ```
-fr_lookup = tf.lookup.StaticVocabularyTable(
-    num_oov_buckets=1,
-    initializer=tf.lookup.TextFileInitializer(
-        filename='fr_vocab.txt',
-        key_dtype=tf.string,
-        key_index = tf.lookup.TextFileIndex.WHOLE_LINE,
-        value_dtype = tf.int64,
-        value_index=tf.lookup.TextFileIndex.LINE_NUMBER)) 
-fr_tokenizer = text.BertTokenizer(fr_lookup)
+model_name = 'mtnt_fr_en_converter'
+tf.keras.utils.get_file(
+     f'{model_name}.zip',
+    'https://github.com/charbull/subword_tokenizer_fr/raw/main/mtnt_fr_en_converter.zip',
+    cache_dir='.', cache_subdir='', extract=True
 ```
 Then:
 ```
+tokenizers = tf.saved_model.load(model_name)
+```
+
+list the methods:
+
+```
+[item for item in dir(tokenizers.en) if not item.startswith('_')]
+```
+
+
+```
+
 # Tokenize the examples -> (batch, word, word-piece)
 token_batch_fr = fr_tokenizer.tokenize(fr_examples)
 # Merge the word and word-piece axes -> (batch, tokens)
